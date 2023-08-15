@@ -1,0 +1,76 @@
+name: Package client with nuitka
+
+on:
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - main
+
+jobs:
+  build_windows:
+    runs-on: windows-latest
+    steps:
+      - name: 检出
+        uses: actions/checkout@v3
+
+      - name: 获取tag名
+        uses: actions-ecosystem/action-regex-match@v2
+        id: regex-match
+        with:
+          text: ${{ github.ref }}
+          regex: 'refs/tags/([\S]+)'
+
+      - name: 创建python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          architecture: 'x64'
+
+      - name: 安装依赖
+        run: |
+            python -m pip install --upgrade pip  &&
+            python -m pip install -r requirements.txt
+
+      - name: 构建exe
+        uses: JustUndertaker/Nuitka-Action@v1.0
+        with:
+          nuitka-version: main
+          script-name: main.py
+          include-module: wechatbot_client.startup, tortoise.backends.sqlite, apscheduler.triggers.interval, apscheduler.triggers.cron
+          output-dir: dist
+
+      - name: 移动文件
+        run: |
+          mv ./dist/main.exe ./ComWeChat-Client-${{ steps.regex-match.outputs.group1 }}.exe &&
+          mv ./depends/CWeChatRobot.exe ./CWeChatRobot.exe &&
+          mv ./depends/DWeChatRobot.dll ./DWeChatRobot.dll &&
+          mv ./depends/install.bat ./install.bat &&
+          mv ./depends/uninstall.bat ./uninstall.bat
+
+      - name: 打包文件
+        uses: vimtor/action-zip@v1
+        with:
+          files: ComWeChat-Client-${{ steps.regex-match.outputs.group1 }}.exe .env CWeChatRobot.exe DWeChatRobot.dll install.bat uninstall.bat
+          dest: ComWeChat-Client-${{ steps.regex-match.outputs.group1 }}.zip
+
+      - name: 发布版本
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          tag_name: ${{ steps.regex-match.outputs.group1 }}
+          release_name: ${{ steps.regex-match.outputs.group1 }}
+          body: release of ComWeChat-Client-${{ steps.regex-match.outputs.group1 }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+
+      - name: 上传文件
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./ComWeChat-Client-${{ steps.regex-match.outputs.group1 }}.zip
+          asset_name: ComWeChat-Client-${{ steps.regex-match.outputs.group1 }}.zip
+          asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+
