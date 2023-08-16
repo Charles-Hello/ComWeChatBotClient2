@@ -146,6 +146,12 @@ class MessageHandler(Generic[E]):
         else:
             at_xml = None
         event_id = str(uuid4())
+        
+        #向onebotv12是否自我发送
+        if msg.isSendMsg:
+            isSendMsg = True
+        else:
+            isSendMsg = False
         if at_xml is None:
             # 没有at
             # 获取message
@@ -161,9 +167,9 @@ class MessageHandler(Generic[E]):
                     alt_message=str(message),
                     user_id=msg.wxid,
                     group_id=msg.sender,
+                    isSendMsg=isSendMsg
                 )
-            if msg.isSendMsg:
-                msg.wxid = msg.self
+
             return PrivateMessageEvent(
                 id=event_id,
                 time=msg.timestamp,
@@ -172,6 +178,7 @@ class MessageHandler(Generic[E]):
                 message=message,
                 alt_message=str(message),
                 user_id=msg.wxid,
+                isSendMsg =isSendMsg
             )
 
         # 获取at

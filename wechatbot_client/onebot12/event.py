@@ -58,6 +58,10 @@ class MessageEvent(Event):
     """消息替代表示"""
     user_id: str
     """用户id"""
+    
+    isSendMsg: bool
+    """判断是否自我发送"""
+    
 
 
 class PrivateMessageEvent(MessageEvent):
@@ -65,13 +69,13 @@ class PrivateMessageEvent(MessageEvent):
 
     detail_type: Literal["private"] = "private"
 
-
 class GroupMessageEvent(MessageEvent):
     """群消息"""
 
     detail_type: Literal["group"] = "group"
     group_id: str
     """群聊id"""
+
 
 
 class NoticeEvent(Event):
