@@ -162,8 +162,8 @@ class MessageHandler(Generic[E]):
                     user_id=msg.wxid,
                     group_id=msg.sender,
                 )
-            if msg.isSendMsg:
-                msg.wxid = msg.self
+            # if msg.isSendMsg:
+            #     msg.wxid = msg.selfu
             return PrivateMessageEvent(
                 id=event_id,
                 time=msg.timestamp,
@@ -172,6 +172,7 @@ class MessageHandler(Generic[E]):
                 message=message,
                 alt_message=str(message),
                 user_id=msg.wxid,
+                k ="少时诵诗书"
             )
 
         # 获取at

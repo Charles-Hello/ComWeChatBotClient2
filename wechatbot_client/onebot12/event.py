@@ -64,7 +64,7 @@ class PrivateMessageEvent(MessageEvent):
     """私聊消息"""
 
     detail_type: Literal["private"] = "private"
-
+    k:str
 
 class GroupMessageEvent(MessageEvent):
     """群消息"""
@@ -72,6 +72,7 @@ class GroupMessageEvent(MessageEvent):
     detail_type: Literal["group"] = "group"
     group_id: str
     """群聊id"""
+
 
 
 class NoticeEvent(Event):
