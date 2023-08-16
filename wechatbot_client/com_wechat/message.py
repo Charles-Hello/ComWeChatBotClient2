@@ -146,6 +146,12 @@ class MessageHandler(Generic[E]):
         else:
             at_xml = None
         event_id = str(uuid4())
+        
+        #向onebotv12是否自我发送
+        if msg.isSendMsg:
+            isSendMsg = True
+        else:
+            isSendMsg = False
         if at_xml is None:
             # 没有at
             # 获取message
@@ -161,9 +167,9 @@ class MessageHandler(Generic[E]):
                     alt_message=str(message),
                     user_id=msg.wxid,
                     group_id=msg.sender,
+                    isSendMsg=isSendMsg
                 )
-            if msg.isSendMsg:
-                msg.wxid = msg.self
+
             return PrivateMessageEvent(
                 id=event_id,
                 time=msg.timestamp,
@@ -172,6 +178,7 @@ class MessageHandler(Generic[E]):
                 message=message,
                 alt_message=str(message),
                 user_id=msg.wxid,
+                isSendMsg =isSendMsg
             )
 
         # 获取at
@@ -210,6 +217,7 @@ class MessageHandler(Generic[E]):
             alt_message=str(new_msg),
             user_id=msg.wxid,
             group_id=msg.sender,
+            isSendMsg =isSendMsg
         )
 
     @add_handler(WxType.IMAGE_MSG)
@@ -217,6 +225,10 @@ class MessageHandler(Generic[E]):
         """
         处理图片
         """
+        if msg.isSendMsg:
+            isSendMsg = True
+        else:
+            isSendMsg = False
         file_name = Path(msg.filepath).stem
         # 找图片
         file_path = f"{self.image_path.absolute()}/{file_name}"
@@ -240,6 +252,8 @@ class MessageHandler(Generic[E]):
                 alt_message=str(message),
                 user_id=msg.wxid,
                 group_id=msg.sender,
+                isSendMsg =isSendMsg
+                
             )
         return PrivateMessageEvent(
             id=event_id,
@@ -249,6 +263,7 @@ class MessageHandler(Generic[E]):
             message=message,
             alt_message=str(message),
             user_id=msg.wxid,
+            isSendMsg =isSendMsg
         )
 
     @add_handler(WxType.VOICE_MSG)
@@ -256,6 +271,10 @@ class MessageHandler(Generic[E]):
         """
         处理语音
         """
+        if msg.isSendMsg:
+            isSendMsg = True
+        else:
+            isSendMsg = False
         file_name = msg.sign
         file = self.voice_path / f"{file_name}.amr"
         file = await self.file_manager.wait_for_file(file)
@@ -278,6 +297,7 @@ class MessageHandler(Generic[E]):
                 alt_message=str(message),
                 user_id=msg.wxid,
                 group_id=msg.sender,
+                isSendMsg =isSendMsg
             )
         return PrivateMessageEvent(
             id=event_id,
@@ -287,6 +307,7 @@ class MessageHandler(Generic[E]):
             message=message,
             alt_message=str(message),
             user_id=msg.wxid,
+            isSendMsg =isSendMsg
         )
 
     @add_handler(WxType.FRIEND_REQUEST)
@@ -354,6 +375,10 @@ class MessageHandler(Generic[E]):
         """
         处理视频
         """
+        if msg.isSendMsg:
+            isSendMsg = True
+        else:
+            isSendMsg = False
         video_img = self.wechat_path / msg.thumb_path
         video_path = video_img.parent
         video_name = f"{video_img.stem}.mp4"
@@ -378,6 +403,7 @@ class MessageHandler(Generic[E]):
                 alt_message=str(message),
                 user_id=msg.wxid,
                 group_id=msg.sender,
+                isSendMsg =isSendMsg
             )
         return PrivateMessageEvent(
             id=event_id,
@@ -387,6 +413,7 @@ class MessageHandler(Generic[E]):
             message=message,
             alt_message=str(message),
             user_id=msg.wxid,
+            isSendMsg =isSendMsg
         )
 
     @add_handler(WxType.EMOJI_MSG)
@@ -394,6 +421,10 @@ class MessageHandler(Generic[E]):
         """
         处理gif表情
         """
+        if msg.isSendMsg:
+            isSendMsg = True
+        else:
+            isSendMsg = False
         event_id = str(uuid4())
         # 获取文件名
         raw_xml = msg.message
@@ -415,6 +446,7 @@ class MessageHandler(Generic[E]):
                 alt_message=str(message),
                 user_id=msg.wxid,
                 group_id=msg.sender,
+                isSendMsg =isSendMsg
             )
         return PrivateMessageEvent(
             id=event_id,
@@ -424,6 +456,7 @@ class MessageHandler(Generic[E]):
             message=message,
             alt_message=str(message),
             user_id=msg.wxid,
+            isSendMsg =isSendMsg
         )
 
     @add_handler(WxType.LOCATION_MSG)
@@ -431,6 +464,10 @@ class MessageHandler(Generic[E]):
         """
         处理位置信息
         """
+        if msg.isSendMsg:
+            isSendMsg = True
+        else:
+            isSendMsg = False
         event_id = str(uuid4())
         raw_xml = msg.message
         xml_obj = ET.fromstring(raw_xml)
@@ -454,6 +491,7 @@ class MessageHandler(Generic[E]):
                 alt_message=str(message),
                 user_id=msg.wxid,
                 group_id=msg.sender,
+                isSendMsg =isSendMsg
             )
         return PrivateMessageEvent(
             id=event_id,
@@ -463,6 +501,7 @@ class MessageHandler(Generic[E]):
             message=message,
             alt_message=str(message),
             user_id=msg.wxid,
+            isSendMsg =isSendMsg
         )
 
     @add_handler(WxType.APP_MSG)
@@ -528,6 +567,10 @@ class AppMessageHandler(Generic[E]):
         """
         处理其他应用分享的链接
         """
+        if msg.isSendMsg:
+            isSendMsg = True
+        else:
+            isSendMsg = False
         event_id = str(uuid4())
         title = app.find("./title").text
         des = app.find("./des").text
@@ -556,6 +599,7 @@ class AppMessageHandler(Generic[E]):
                 alt_message=str(message),
                 user_id=msg.wxid,
                 group_id=msg.sender,
+                isSendMsg =isSendMsg
             )
         return PrivateMessageEvent(
             id=event_id,
@@ -565,6 +609,7 @@ class AppMessageHandler(Generic[E]):
             message=message,
             alt_message=str(message),
             user_id=msg.wxid,
+            isSendMsg =isSendMsg
         )
 
     @classmethod
@@ -575,6 +620,10 @@ class AppMessageHandler(Generic[E]):
         """
         处理链接
         """
+        if msg.isSendMsg:
+            isSendMsg = True
+        else:
+            isSendMsg = False
         event_id = str(uuid4())
         title = app.find("./title").text
         des = app.find("./des").text
@@ -603,6 +652,7 @@ class AppMessageHandler(Generic[E]):
                 alt_message=str(message),
                 user_id=msg.wxid,
                 group_id=msg.sender,
+                isSendMsg =isSendMsg
             )
         return PrivateMessageEvent(
             id=event_id,
@@ -612,6 +662,7 @@ class AppMessageHandler(Generic[E]):
             message=message,
             alt_message=str(message),
             user_id=msg.wxid,
+            isSendMsg =isSendMsg
         )
 
     @classmethod
@@ -622,6 +673,10 @@ class AppMessageHandler(Generic[E]):
         """
         处理文件消息
         """
+        if msg.isSendMsg:
+            isSendMsg = True
+        else:
+            isSendMsg = False
         event_id = str(uuid4())
         file_name = app.find("./title").text
         md5 = app.find("./md5").text
@@ -642,6 +697,7 @@ class AppMessageHandler(Generic[E]):
                     file_name=file_name,
                     file_length=file_length,
                     md5=md5,
+                    isSendMsg =isSendMsg
                 )
             else:
                 return GetPrivateFileNotice(
@@ -652,6 +708,7 @@ class AppMessageHandler(Generic[E]):
                     file_name=file_name,
                     file_length=file_length,
                     md5=md5,
+                    isSendMsg =isSendMsg
                 )
 
         # 文件消息
@@ -675,6 +732,7 @@ class AppMessageHandler(Generic[E]):
                 alt_message=str(message),
                 user_id=msg.wxid,
                 group_id=msg.sender,
+                isSendMsg =isSendMsg
             )
         return PrivateMessageEvent(
             id=event_id,
@@ -684,6 +742,7 @@ class AppMessageHandler(Generic[E]):
             message=message,
             alt_message=str(message),
             user_id=msg.wxid,
+            isSendMsg =isSendMsg
         )
 
     @classmethod
@@ -694,6 +753,10 @@ class AppMessageHandler(Generic[E]):
         """
         处理引用
         """
+        if msg.isSendMsg:
+            isSendMsg = True
+        else:
+            isSendMsg = False
         event_id = str(uuid4())
         text = app.find("./title").text
         from_msgid = app.find("./refermsg/svrid").text
@@ -712,6 +775,7 @@ class AppMessageHandler(Generic[E]):
                 alt_message=str(message),
                 user_id=msg.wxid,
                 group_id=msg.sender,
+                isSendMsg =isSendMsg
             )
         return PrivateMessageEvent(
             id=event_id,
@@ -721,6 +785,7 @@ class AppMessageHandler(Generic[E]):
             message=message,
             alt_message=str(message),
             user_id=msg.wxid,
+            isSendMsg =isSendMsg
         )
 
     @classmethod
@@ -731,6 +796,10 @@ class AppMessageHandler(Generic[E]):
         """
         处理app消息
         """
+        if msg.isSendMsg:
+            isSendMsg = True
+        else:
+            isSendMsg = False
         event_id = str(uuid4())
         title = app.find("./title").text
         url = app.find("./url").text
@@ -747,6 +816,7 @@ class AppMessageHandler(Generic[E]):
                 alt_message=str(message),
                 user_id=msg.wxid,
                 group_id=msg.sender,
+                isSendMsg =isSendMsg
             )
         return PrivateMessageEvent(
             id=event_id,
@@ -756,6 +826,7 @@ class AppMessageHandler(Generic[E]):
             message=message,
             alt_message=str(message),
             user_id=msg.wxid,
+            isSendMsg =isSendMsg
         )
 
     @classmethod
