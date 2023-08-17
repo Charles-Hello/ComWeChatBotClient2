@@ -169,7 +169,6 @@ class MessageHandler(Generic[E]):
                     group_id=msg.sender,
                     isSendMsg=isSendMsg
                 )
-
             return PrivateMessageEvent(
                 id=event_id,
                 time=msg.timestamp,
