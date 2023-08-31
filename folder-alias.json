@@ -1,0 +1,32 @@
+{
+    "wechatbot_client/action_manager/manager.py": {
+        "description": "这里发送请求调用com_wechat里面真正实现hook请求"
+    },
+    "wechatbot_client/com_wechat/com_wechat.py": {
+        "description": "这里是接收信息和实现对微信各种接口，方便调用"
+    },
+    "wechatbot_client/com_wechat/message.py": {
+        "description": "拿到信息实现onebotv12的协议-----------各种函数调用"
+    },
+    "wechatbot_client/consts.py": {
+        "description": "定义的全局变量"
+    },
+    "wechatbot_client/config.py": {
+        "description": "配置env文件"
+    },
+    "wechatbot_client/startup.py": {
+        "description": "所有任务的启动器"
+    },
+    "wechatbot_client/wechat/adapter.py": {
+        "description": "拿到已经处理后的onebotv12的信息发送给 websocket连接处理"
+    },
+    "wechatbot_client/wechat/wechat.py": {
+        "description": "这里调用com_wechat的message处理形成onebov12信息后然后发送给ws端"
+    },
+    "wechatbot_client/driver/driver.py": {
+        "description": "这里用来连接ws服务"
+    },
+    "wechatbot_client/driver": {
+        "description": "这个driver不用研究"
+    }
+}

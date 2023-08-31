@@ -257,6 +257,8 @@ class Adapter:
                         log("ERROR", f"发送connect事件失败:{e}")
                     # 发送update事件
                     event = self.get_status_update_event()
+                    g = event.json(ensure_ascii=False, cls=DataclassEncoder)
+                    print(g)
                     try:
                         await websocket.send(
                             event.json(ensure_ascii=False, cls=DataclassEncoder)

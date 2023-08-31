@@ -122,3 +122,6 @@ async def clean_filecache(days: int) -> None:
     logger.info("<g>开始清理文件缓存任务...</g>")
     nums = await wechat.file_manager.clean_cache(days)
     logger.success(f"<g>清理缓存完成，共清理 {nums} 个文件...</g>")
+    directory_to_clear = "file_cache"
+    await wechat.file_manager.clear_directory(directory_to_clear)
+    

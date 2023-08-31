@@ -2,5 +2,14 @@
   "[python]": {
     "editor.defaultFormatter": "ms-python.autopep8"
   },
-  "python.formatting.provider": "none"
+  "python.formatting.provider": "none",
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "database": "${workspaceFolder:ComWeChatBotClient2}/data/data.db",
+      "name": "name"
+    }
+  ],
+  "sqltools.useNodeRuntime": true
 }

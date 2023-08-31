@@ -5,6 +5,7 @@ from typing import Optional, Tuple
 from uuid import uuid4
 
 from httpx import URL, AsyncClient
+import os
 
 from wechatbot_client.consts import DOWNLOAD_TIMEOUT, FILE_CACHE
 from wechatbot_client.utils import logger_wrapper, run_sync
@@ -154,7 +155,15 @@ class FileManager:
                 file.unlink()
                 count += 1
         return count
-
+    async def clear_directory(self,directory_path):
+            try:
+                for root, dirs, files in os.walk(directory_path):
+                    for file in files:
+                        file_path = os.path.join(root, file)
+                        os.remove(file_path)
+                print(f"Contents of directory '{directory_path}' have been cleared.")
+            except Exception as e:
+                print(f"Error clearing directory contents '{directory_path}': {e}")
     async def clean_cache(self, days: int = 3) -> int:
         """
         说明:

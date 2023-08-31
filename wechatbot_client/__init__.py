@@ -24,6 +24,7 @@ def init() -> None:
     logger.debug(f"Loaded <y><b>Config</b></y>: {str(config.dict())}")
 
     _WeChat = WeChatManager(config)
+    #这里初始化配置文件
     _WeChat.init()
 
 
