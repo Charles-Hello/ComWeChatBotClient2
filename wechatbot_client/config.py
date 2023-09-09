@@ -202,6 +202,7 @@ class Config(BaseConfig):
     """日志保存天数"""
     cache_days: int = 3
     """文件缓存天数"""
-
+    push_plus_token :str= ""
+    """push_plus的token"""
     class Config:
         extra = "allow"

@@ -4,7 +4,7 @@ from inspect import iscoroutinefunction
 from pathlib import Path
 from sys import exit
 from typing import Callable, Literal, Optional, ParamSpec, TypeVar, Union
-
+import requests
 from pydantic import BaseModel
 
 from wechatbot_client.com_wechat import ComWechatApi
@@ -89,15 +89,40 @@ class ApiManager:
             exit(0)
         log("SUCCESS", "<g>登录完成...</g>")
 
+
+    def push(self,config: Config):
+        headers = {
+            'Accept': '*/*',
+            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+            'Content-Type': 'application/json;charset=UTF-8',
+        }
+        json_data = {
+            'token': config.push_plus_token,
+            'title': '微信登录',
+            'content': '快去登录！！',
+            'template': 'html',
+            'channel': 'wechat',
+            'webhook': '',
+        }
+
+        requests.post('https://www.pushplus.plus/api/send', headers=headers, json=json_data)
+
+
     def wait_for_login(self) -> bool:
         """
         等待登录
         """
+        count =0
         while True:
             try:
                 if self.com_api.is_wechat_login():
                     return True
                 time.sleep(1)
+                count += count
+                if count % 300 == 0:
+                    self.push(Config)
             except KeyboardInterrupt:
                 return False
 
@@ -613,7 +638,8 @@ class ActionManager(ApiManager):
             )
         if isinstance(data, str):
             data = b64decode(data)
-        file_id = await self.file_manager.cache_file_id_from_data(data, name)
+            new_image_data = b64decode(data)
+        file_id = await self.file_manager.cache_file_id_from_data(new_image_data, name)
         return ActionResponse(status="ok", retcode=0, data={"file_id": file_id})
 
     @standard_action
