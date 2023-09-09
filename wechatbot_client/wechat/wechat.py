@@ -49,14 +49,14 @@ class WeChatManager(Adapter):
         super().__init__(config)
         self.self_id = None
         self.message_handler = None
-        self.action_manager = ActionManager()
+        self.action_manager = ActionManager(config=config)
         self.file_manager = FileManager()
 
     def init(self) -> None:
         """
         初始化wechat管理端
         """
-        self.action_manager.init(self.file_manager, self.config)
+        self.action_manager.init(self.file_manager)
 
         log("DEBUG", "<y>开始获取wxid...</y>")
         info = self.action_manager.get_info()

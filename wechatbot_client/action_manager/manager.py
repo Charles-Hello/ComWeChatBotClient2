@@ -51,16 +51,16 @@ class ApiManager:
     file_base_url: str
     """文件base url"""
 
-    def __init__(self) -> None:
+    def __init__(self,config) -> None:
         self.com_api = ComWechatApi()
         self.file_manager = None
-
-    def init(self, file_manager: FileManager, config: Config) -> None:
+        self.config = config
+    def init(self, file_manager: FileManager) -> None:
         """
         初始化com
         """
         self.file_manager = file_manager
-        self.file_base_url = f"http://{config.host}:{config.port}/get_file/"
+        self.file_base_url = f"http://{self.config.host}:{self.config.port}/get_file/"
         # 初始化com组件
         log("DEBUG", "<y>初始化com组件...</y>")
         if not self.com_api.init():
@@ -90,7 +90,7 @@ class ApiManager:
         log("SUCCESS", "<g>登录完成...</g>")
 
 
-    def push(self,config: Config):
+    def push(self):
         headers = {
             'Accept': '*/*',
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
@@ -99,7 +99,7 @@ class ApiManager:
             'Content-Type': 'application/json;charset=UTF-8',
         }
         json_data = {
-            'token': config.push_plus_token,
+            'token': self.config.push_plus_token,
             'title': '微信登录',
             'content': '快去登录！！',
             'template': 'html',
@@ -115,6 +115,7 @@ class ApiManager:
         等待登录
         """
         count =0
+        self.push()
         while True:
             try:
                 if self.com_api.is_wechat_login():
@@ -122,7 +123,7 @@ class ApiManager:
                 time.sleep(1)
                 count += count
                 if count % 300 == 0:
-                    self.push(Config)
+                    self.push()
             except KeyboardInterrupt:
                 return False
 
