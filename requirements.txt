@@ -43,3 +43,4 @@ wheel==0.38.4
 win32-setctime==1.1.0
 wincertstore==0.2
 yarl==1.8.2
+requests==2.31.0

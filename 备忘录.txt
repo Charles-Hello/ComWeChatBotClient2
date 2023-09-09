@@ -1,7 +1,7 @@
 
 
-git tag -a v0.0.8 -m "新增微信登录推送，修复对接nonebot2图片"
-git push origin v0.0.8
+git tag -a v0.0.9 -m "debug"
+git push origin v0.0.9
 
 
 
