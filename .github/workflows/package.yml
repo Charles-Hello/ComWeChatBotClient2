@@ -42,7 +42,7 @@ jobs:
 
       - name: 移动文件
         run: |
-          mv ./dist/main.exe ./ComWeChat-Client-${{ steps.regex-match.outputs.group1 }}.exe &&
+          mv ./dist/main.exe ./ComWeChat-Client-${{ github.ref_name }}.exe &&
           mv ./depends/CWeChatRobot.exe ./CWeChatRobot.exe &&
           mv ./depends/DWeChatRobot.dll ./DWeChatRobot.dll &&
           mv ./depends/install.bat ./install.bat &&
@@ -51,25 +51,29 @@ jobs:
       - name: 打包文件
         uses: vimtor/action-zip@v1
         with:
-          files: ComWeChat-Client-${{ steps.regex-match.outputs.group1 }}.exe .env CWeChatRobot.exe DWeChatRobot.dll install.bat uninstall.bat
-          dest: ComWeChat-Client-${{ steps.regex-match.outputs.group1 }}.zip
+          files: ComWeChat-Client-${{ github.ref_name }}.exe .env CWeChatRobot.exe DWeChatRobot.dll install.bat uninstall.bat
+          dest: ComWeChat-Client-${{ github.ref_name }}.zip
 
+      # 只在推送标签时创建发布
       - name: 发布版本
+        if: startsWith(github.ref, 'refs/tags/')
         uses: actions/create-release@v1
         id: create_release
         with:
-          tag_name: ${{ steps.regex-match.outputs.group1 }}
-          release_name: ${{ steps.regex-match.outputs.group1 }}
-          body: release of ComWeChat-Client-${{ steps.regex-match.outputs.group1 }}
+          tag_name: ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }}
+          body: release of ComWeChat-Client-${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
 
+      # 只在推送标签时上传文件
       - name: 上传文件
+        if: startsWith(github.ref, 'refs/tags/')
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./ComWeChat-Client-${{ steps.regex-match.outputs.group1 }}.zip
-          asset_name: ComWeChat-Client-${{ steps.regex-match.outputs.group1 }}.zip
+          asset_path: ./ComWeChat-Client-${{ github.ref_name }}.zip
+          asset_name: ComWeChat-Client-${{ github.ref_name }}.zip
           asset_content_type: application/zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
