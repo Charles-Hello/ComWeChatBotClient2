@@ -114,16 +114,16 @@ class ApiManager:
         """
         等待登录
         """
-        count =0
-        self.push()
+        count = 0
+        # self.push()  # 注释掉推送通知
         while True:
             try:
                 if self.com_api.is_wechat_login():
                     return True
                 time.sleep(1)
                 count += count
-                if count % 300 == 0:
-                    self.push()
+                # if count % 300 == 0:  # 注释掉定期推送通知
+                #     self.push()
             except KeyboardInterrupt:
                 return False
 
